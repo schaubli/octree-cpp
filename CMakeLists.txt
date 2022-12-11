@@ -14,7 +14,6 @@ ${CMAKE_SOURCE_DIR}/src/aabb.cpp
 ${CMAKE_SOURCE_DIR}/src/aabb.hpp
 )
 target_include_directories(octree PRIVATE "${PROJECT_SOURCE_DIR}/src")
-# target_include_directories(octree PRIVATE "${CMAKE_SOURCE_DIR}/src")
 
 # Add main executable
 add_executable(octree-cpp main.cpp)
