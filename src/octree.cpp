@@ -6,7 +6,7 @@ Octree::Octree() : aabb(), points()
 {
 }
 
-Octree::Octree(std::vector<Point *> points) : Octree(points, 6)
+Octree::Octree(std::vector<Point *> points) : Octree(points, 4)
 {
 }
 
@@ -18,11 +18,11 @@ Octree::Octree(std::vector<Point *> points, int max_depth) : aabb(points), point
     }
 }
 
-Octree::Octree(Point lower, Point upper) : Octree(lower, upper, 6) {}
+Octree::Octree(Point lower, Point upper) : Octree(lower, upper, 4) {}
 
 Octree::Octree(Point lower, Point upper, int max_depth) : aabb(lower, upper), points(), max_depth(max_depth) {}
 
-Octree::Octree(AABB aabb) : Octree(aabb, 6) {}
+Octree::Octree(AABB aabb) : Octree(aabb, 4) {}
 Octree::Octree(AABB aabb, int max_depth) : aabb(aabb), max_depth(max_depth), points(0) {}
 
 bool Octree::insert(Point *p)
@@ -31,34 +31,34 @@ bool Octree::insert(Point *p)
 
     if (aabb.includes(p) == false)
     {
-        std::cout << "Not included! " << std::endl;
+        // std::cout << "Not included! " << std::endl;
         return false;
     }
     if (children.size() == 0)
     {
         // Check if point already exists
-        for (int i = 0; i < points.size(); i++)
-        {
-            if (*points[i] == *p)
-            {
-                std::cout << "Point already in octree! " << std::endl;
-                return false;
-            }
-        }
+        // for (int i = 0; i < points.size(); i++)
+        // {
+        //     if (*points[i] == *p)
+        //     {
+        //         // std::cout << "Point already in octree! " << std::endl;
+        //         return false;
+        //     }
+        // }
         if (points.size() == 0 || max_depth < 1)
         {
             if (max_depth < 1)
             {
-                std::cout << "Reached max depth in " << aabb << ". " << std::endl;
+                // std::cout << "Reached max depth in " << aabb << ". " << std::endl;
             }
-            std::cout << "Initial point in " << aabb << ". " << std::endl;
+            // std::cout << "Initial point in " << aabb << ". " << std::endl;
             points.push_back(p);
             return true;
         }
         else
         {
             // Subdivide
-            std::cout << "Subdividing octree. " << std::endl;
+            // std::cout << "Subdividing octree. " << std::endl;
             std::vector<AABB *> aabbs = aabb.subdivide();
             for (int i = 0; i < points.size(); i++)
             {
@@ -87,7 +87,7 @@ bool Octree::insert(Point *p)
     return false;
 }
 
-bool Octree::find(Point *p)
+bool Octree::find(Point *p) const
 {
     for (int i = 0; i < points.size(); i++)
     {
@@ -106,7 +106,7 @@ bool Octree::find(Point *p)
     return false;
 }
 
-Point *Octree::find_closest(Point *p)
+Point *Octree::find_closest(Point *p) const
 {
     if (children.size() == 0)
     {
@@ -132,7 +132,8 @@ Point *Octree::find_closest(Point *p)
     {
         // Search inside first and then outside of children
         Point *closest_p = nullptr;
-        if (aabb.includes(p)) {
+        if (aabb.includes(p))
+        {
             for (int i = 0; i < children.size(); i++)
             {
                 if (children[0]->aabb.includes(p))
@@ -158,15 +159,46 @@ Point *Octree::find_closest(Point *p)
     }
 }
 
+int Octree::count_aabbs() const
+{
+    if (children.size() == 0)
+    {
+        return 1;
+    }
+    int sum = 0;
+    for (int i = 0; i < children.size(); i++)
+    {
+        sum += children[i]->count_aabbs();
+    }
+    return sum;
+}
+
+int Octree::count_filled_max_depth_aabbs() const
+{
+    if (children.size() == 0)
+    {
+        return max_depth < 1 && points.size() > 0 ? 1 : 0;
+    }
+    int sum = 0;
+    for (int i = 0; i < children.size(); i++)
+    {
+        sum += children[i]->count_filled_max_depth_aabbs();
+    }
+    return sum;
+}
+
 std::ostream &operator<<(std::ostream &os, const Octree &octree)
 {
+    int aabbs = octree.count_aabbs();
+    int filled_aabbs = octree.count_filled_max_depth_aabbs();
+    float fill_amount = filled_aabbs * 1.0f / aabbs;
     if (octree.points.size() == 0)
     {
-        os << "Octree (empty): " << octree.aabb;
+        os << "Octree (empty): " << octree.aabb << " with " << (int)(fill_amount * 100.0f) << "\% of max depth aabbs filled";
     }
     else
     {
-        os << "Octree (filled): " << octree.aabb;
+        os << "Octree (filled): " << octree.aabb << " with " << (int)(fill_amount * 100.0f) << "\% of max depth aabbs filled";
     }
     return os;
 }

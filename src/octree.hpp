@@ -13,6 +13,7 @@ private:
 public:
     AABB aabb;
     std::vector<Point *> points;
+
     Octree();
     Octree(std::vector<Point *> points);
     Octree(std::vector<Point *> points, int max_depth);
@@ -21,8 +22,10 @@ public:
     Octree(AABB aabb);
     Octree(AABB aabb, int max_depth);
     bool insert(Point *p);
-    bool find(Point *p);
-    Point *find_closest(Point *p);
+    bool find(Point *p) const;
+    Point *find_closest(Point *p) const;
+    int count_aabbs() const;
+    int count_filled_max_depth_aabbs() const;
 };
 
 std::ostream &operator<<(std::ostream &os, const Octree &octree);

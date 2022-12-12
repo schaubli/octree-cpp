@@ -38,14 +38,14 @@ AABB::AABB(std::vector<Point *> points)
     upper = Point(max_x, max_y, max_z);
 }
 
-bool AABB::includes(Point *p)
+bool AABB::includes(Point *p) const
 {
     return p->x >= lower.x && p->x <= upper.x &&
            p->y >= lower.y && p->y <= upper.y &&
            p->z >= lower.z && p->z <= upper.z;
 }
 
-float AABB::distance_outside(Point *p)
+float AABB::distance_outside(Point *p) const
 {
     float x_dist = p->x >= lower.x && p->x <= upper.x ? 0 : std::min(std::abs(p->x - lower.x), std::abs(p->x - upper.x));
     float y_dist = p->y >= lower.y && p->y <= upper.y ? 0 : std::min(std::abs(p->y - lower.y), std::abs(p->y - upper.y));
@@ -53,7 +53,7 @@ float AABB::distance_outside(Point *p)
     return std::sqrt(std::pow(x_dist, 2.0f) + std::pow(y_dist, 2.0f) + std::pow(z_dist, 2.0f));
 }
 
-float AABB::distance_inside(Point *p)
+float AABB::distance_inside(Point *p) const
 {
     float x_dist = std::min(std::abs(p->x - lower.x), std::abs(p->x - upper.x));
     float y_dist = std::min(std::abs(p->y - lower.y), std::abs(p->y - upper.y));

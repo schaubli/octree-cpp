@@ -15,10 +15,10 @@ public:
     AABB(std::vector<Point *> points);
     AABB(Point lower, Point upper);
 
-    bool includes(Point *p);
+    bool includes(Point *p) const;
     std::vector<AABB *> subdivide();
-    float distance_outside(Point *p);
-    float distance_inside(Point *p);
+    float distance_outside(Point *p) const;
+    float distance_inside(Point *p) const;
 };
 
 std::ostream &operator<<(std::ostream &os, const AABB &aabb);
