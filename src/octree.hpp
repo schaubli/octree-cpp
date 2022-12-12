@@ -4,18 +4,24 @@
 #include "aabb.hpp"
 #include <vector>
 
-class Octree {
+class Octree
+{
 private:
-    std::vector<Octree*> children;
+    std::vector<Octree *> children;
+    int max_depth;
+
 public:
     AABB aabb;
-    Point* point = nullptr;
+    std::vector<Point *> points;
     Octree();
-    Octree(std::vector<Point*> points);
+    Octree(std::vector<Point *> points);
+    Octree(std::vector<Point *> points, int max_depth);
     Octree(Point lower, Point upper);
+    Octree(Point lower, Point upper, int max_depth);
     Octree(AABB aabb);
-    bool insert(Point* p);
-    bool find(Point* p);
+    Octree(AABB aabb, int max_depth);
+    bool insert(Point *p);
+    bool find(Point *p);
 };
 
-std::ostream& operator<<(std::ostream& os, const Octree& octree);
+std::ostream &operator<<(std::ostream &os, const Octree &octree);

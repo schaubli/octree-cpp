@@ -92,5 +92,7 @@
         "valarray": "cpp",
         "variant": "cpp",
         "filesystem": "cpp"
-    }
+    },
+    "editor.formatOnSave": false,
+    "editor.formatOnSaveMode": "modificationsIfAvailable"
 }
