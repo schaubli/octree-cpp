@@ -22,6 +22,7 @@ public:
     Octree(AABB aabb, int max_depth);
     bool insert(Point *p);
     bool find(Point *p);
+    Point *find_closest(Point *p);
 };
 
 std::ostream &operator<<(std::ostream &os, const Octree &octree);

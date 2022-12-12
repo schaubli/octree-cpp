@@ -17,6 +17,7 @@ public:
     Point operator-(Point other);
     Point operator/(float divisor);
     bool operator==(Point other);
+    float length();
     Point x_component();
     Point y_component();
     Point z_component();

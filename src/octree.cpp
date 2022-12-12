@@ -47,7 +47,8 @@ bool Octree::insert(Point *p)
         }
         if (points.size() == 0 || max_depth < 1)
         {
-            if (max_depth<1) {
+            if (max_depth < 1)
+            {
                 std::cout << "Reached max depth in " << aabb << ". " << std::endl;
             }
             std::cout << "Initial point in " << aabb << ". " << std::endl;
@@ -103,6 +104,58 @@ bool Octree::find(Point *p)
         }
     }
     return false;
+}
+
+Point *Octree::find_closest(Point *p)
+{
+    if (children.size() == 0)
+    {
+        // Search in own points
+        if (points.size() == 0)
+        {
+            return nullptr;
+        }
+        float min_dist = (*p - *points[0]).length();
+        Point *closest_p = points[0];
+        for (int i = 1; i < points.size(); i++)
+        {
+            float curr_dist = (*p - *points[i]).length();
+            if (curr_dist < min_dist)
+            {
+                min_dist = curr_dist;
+                closest_p = points[i];
+            }
+        }
+        return closest_p;
+    }
+    else
+    {
+        // Search inside first and then outside of children
+        Point *closest_p = nullptr;
+        if (aabb.includes(p)) {
+            for (int i = 0; i < children.size(); i++)
+            {
+                if (children[0]->aabb.includes(p))
+                {
+                    closest_p = children[0]->find_closest(p);
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < children.size(); i++)
+        {
+            if (children[i]->aabb.includes(p) == false && (closest_p == nullptr || children[i]->aabb.distance_outside(p) < (*closest_p - *p).length()))
+            {
+                Point *new_closest = children[i]->find_closest(p);
+                if (new_closest != nullptr && (closest_p == nullptr || (*p - *new_closest).length() < (*p - *closest_p).length()))
+                {
+                    closest_p = new_closest;
+                }
+            }
+        }
+        return closest_p;
+    }
 }
 
 std::ostream &operator<<(std::ostream &os, const Octree &octree)

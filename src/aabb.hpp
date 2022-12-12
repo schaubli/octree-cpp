@@ -17,6 +17,8 @@ public:
 
     bool includes(Point *p);
     std::vector<AABB *> subdivide();
+    float distance_outside(Point *p);
+    float distance_inside(Point *p);
 };
 
 std::ostream &operator<<(std::ostream &os, const AABB &aabb);

@@ -1,6 +1,7 @@
 #include "point.hpp"
 
 #include <iostream>
+#include <cmath>
 
 Point Point::operator+(Point other)
 {
@@ -20,6 +21,10 @@ Point Point::operator/(float divisor)
 bool Point::operator==(Point other)
 {
     return x == other.x && y == other.y && z == other.z;
+}
+
+float Point::length() {
+    return std::sqrt(std::pow(x, 2.0f) + std::pow(y, 2.0f) + std::pow(z, 2.0f));
 }
 
 Point Point::x_component()
