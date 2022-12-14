@@ -176,6 +176,13 @@ int Octree::count_filled_max_depth_aabbs() const
     return sum;
 }
 
+Octree::~Octree() {
+    for (int i = 0; i < children.size(); i++)
+    {
+        delete children[i];
+    }
+}
+
 std::ostream &operator<<(std::ostream &os, const Octree &octree)
 {
     int aabbs = octree.count_aabbs();

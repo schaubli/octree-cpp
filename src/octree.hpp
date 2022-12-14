@@ -26,6 +26,7 @@ public:
     Point *find_closest(Point *p) const;
     int count_aabbs() const;
     int count_filled_max_depth_aabbs() const;
+    ~Octree();
 };
 
 std::ostream &operator<<(std::ostream &os, const Octree &octree);
