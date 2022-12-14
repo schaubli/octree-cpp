@@ -88,6 +88,7 @@ int main()
     depths.push_back(2);
     depths.push_back(4);
     depths.push_back(6);
+    depths.push_back(8);
     std::cout << "Octree size, ";
     for (int i = 0; i < depths.size(); i++)
     {
@@ -127,7 +128,7 @@ void test_octree(std::vector<Point *> insert_points, int insert_point_limit, std
             test_tree.find_closest(search_points[i]);
         }
         end = clock();
-        int duration = (int)((float)(end - start) * 1000.0f / CLOCKS_PER_SEC) / search_points.size();
+        float duration = ((float)(end - start) * 1000.0f / CLOCKS_PER_SEC) / search_points.size();
         std::cout << duration << ", ";
     }
     std::cout << std::endl;

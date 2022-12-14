@@ -97,15 +97,12 @@ bool Octree::find(Point *p) const
 
 Point *Octree::find_closest(Point *p) const
 {
-    if (children.size() == 0)
+    // Search in own points
+    Point *closest_p = nullptr;
+    if (points.size() != 0)
     {
-        // Search in own points
-        if (points.size() == 0)
-        {
-            return nullptr;
-        }
         float min_dist = (*p - *points[0]).length();
-        Point *closest_p = points[0];
+        closest_p = points[0];
         for (int i = 1; i < points.size(); i++)
         {
             float curr_dist = (*p - *points[i]).length();
@@ -115,37 +112,32 @@ Point *Octree::find_closest(Point *p) const
                 closest_p = points[i];
             }
         }
-        return closest_p;
     }
-    else
+    // Search inside first and then outside of children
+    else if (aabb.includes(p))
     {
-        // Search inside first and then outside of children
-        Point *closest_p = nullptr;
-        if (aabb.includes(p))
-        {
-            for (int i = 0; i < children.size(); i++)
-            {
-                if (children[0]->aabb.includes(p))
-                {
-                    closest_p = children[0]->find_closest(p);
-                    break;
-                }
-            }
-        }
-
         for (int i = 0; i < children.size(); i++)
         {
-            if (children[i]->aabb.includes(p) == false && (closest_p == nullptr || children[i]->aabb.distance_outside(p) < (*closest_p - *p).length()))
+            if (children[i]->aabb.includes(p))
             {
-                Point *new_closest = children[i]->find_closest(p);
-                if (new_closest != nullptr && (closest_p == nullptr || (*p - *new_closest).length() < (*p - *closest_p).length()))
-                {
-                    closest_p = new_closest;
-                }
+                closest_p = children[i]->find_closest(p);
+                break;
             }
         }
-        return closest_p;
     }
+
+    for (int i = 0; i < children.size(); i++)
+    {
+        if (children[i]->aabb.includes(p) == false && (closest_p == nullptr || children[i]->aabb.distance_outside(p) < (*closest_p - *p).length()))
+        {
+            Point *new_closest = children[i]->find_closest(p);
+            if (new_closest != nullptr && (closest_p == nullptr || (*p - *new_closest).length() < (*p - *closest_p).length()))
+            {
+                closest_p = new_closest;
+            }
+        }
+    }
+    return closest_p;
 }
 
 int Octree::count_aabbs() const
@@ -176,7 +168,8 @@ int Octree::count_filled_max_depth_aabbs() const
     return sum;
 }
 
-Octree::~Octree() {
+Octree::~Octree()
+{
     for (int i = 0; i < children.size(); i++)
     {
         delete children[i];
