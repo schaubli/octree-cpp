@@ -88,7 +88,6 @@ int main()
     depths.push_back(2);
     depths.push_back(4);
     depths.push_back(6);
-    depths.push_back(8);
     std::cout << "Octree size, ";
     for (int i = 0; i < depths.size(); i++)
     {
